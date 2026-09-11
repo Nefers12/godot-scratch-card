@@ -2,6 +2,8 @@
 
 Godot 4 plugin for 2D and 3D scratch cards based on `SubViewport` mask rendering. It includes zone tracking, state serialization to PNG, custom brush textures, and an optional Rust GDExtension for faster pixel percentage counting (with automatic GDScript fallback).
 
+![Godot Scratch Card Demo](media/demo.gif)
+
 ## Features
 
 - Supports both 2D (`ScratchCard2D`) and 3D (`ScratchCard3D` with raycasting).
