@@ -1,0 +1,143 @@
+name: Build & Release Addon
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    name: Run GDScript Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Rust library for tests
+        run: |
+          cargo build --manifest-path rust/Cargo.toml
+          mkdir -p addons/godot_scratch_card/bin
+          cp rust/target/debug/libgodot_scratch_card.so addons/godot_scratch_card/bin/libgodot_scratch_card.so
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.7.2
+          use-dotnet: false
+
+      - name: Install GUT
+        run: |
+          git clone --depth 1 --branch v9.6.1 https://github.com/bitwes/Gut.git /tmp/gut_repo
+          mkdir -p addons
+          cp -r /tmp/gut_repo/addons/gut addons/gut
+          rm -rf /tmp/gut_repo
+          godot --headless --import || true
+
+      - name: Run unit tests (GUT)
+        run: godot --headless -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
+
+  build-binaries:
+    name: Build Rust Binary (${{ matrix.binary_name }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            binary_name: libgodot_scratch_card.so
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            binary_name: godot_scratch_card.dll
+          - os: macos-latest
+            target: universal-apple-darwin
+            binary_name: libgodot_scratch_card.dylib
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build for Linux/Windows
+        if: matrix.target != 'universal-apple-darwin'
+        run: |
+          rustup target add ${{ matrix.target }}
+          cargo build --release --target ${{ matrix.target }} --manifest-path rust/Cargo.toml
+
+      - name: Build for macOS (Universal)
+        if: matrix.target == 'universal-apple-darwin'
+        run: |
+          rustup target add x86_64-apple-darwin aarch64-apple-darwin
+          cargo build --release --target x86_64-apple-darwin --manifest-path rust/Cargo.toml
+          cargo build --release --target aarch64-apple-darwin --manifest-path rust/Cargo.toml
+          mkdir -p rust/target/release
+          lipo -create \
+            rust/target/x86_64-apple-darwin/release/libgodot_scratch_card.dylib \
+            rust/target/aarch64-apple-darwin/release/libgodot_scratch_card.dylib \
+            -output rust/target/release/libgodot_scratch_card.dylib
+
+      - name: Copy binary artifact
+        shell: bash
+        run: |
+          mkdir -p artifact_out
+          if [ "${{ matrix.target }}" = "universal-apple-darwin" ]; then
+            cp rust/target/release/libgodot_scratch_card.dylib artifact_out/
+          else
+            cp rust/target/${{ matrix.target }}/release/${{ matrix.binary_name }} artifact_out/
+          fi
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.binary_name }}
+          path: artifact_out/${{ matrix.binary_name }}
+          if-no-files-found: error
+
+  package-release:
+    name: Package Addon & Create Release
+    needs: build-binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download all binary artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binary-*
+          path: artifact_downloads
+          merge-multiple: true
+
+      - name: Prepare bin directory
+        run: |
+          mkdir -p addons/godot_scratch_card/bin
+          cp artifact_downloads/* addons/godot_scratch_card/bin/
+          echo "=== Addon bin contents ==="
+          ls -la addons/godot_scratch_card/bin/
+
+      - name: Zip Addon
+        run: |
+          TAG_NAME="${{ github.ref_name }}"
+          if [ -z "$TAG_NAME" ] || [ "$TAG_NAME" = "main" ]; then
+            TAG_NAME="dev"
+          fi
+          ZIP_NAME="godot_scratch_card-${TAG_NAME}.zip"
+          zip -r "$ZIP_NAME" addons/godot_scratch_card/
+          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
+
+      - name: Create GitHub Release (draft)
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          draft: true

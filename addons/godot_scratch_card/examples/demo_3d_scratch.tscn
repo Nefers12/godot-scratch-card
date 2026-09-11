@@ -1,0 +1,136 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3d_scratch_demo"]
+
+[ext_resource type="Script" path="res://addons/godot_scratch_card/examples/demo_3d_scratch.gd" id="1_demo3d"]
+[ext_resource type="Script" path="res://addons/godot_scratch_card/scripts/scratch_card_3d.gd" id="2_card3d"]
+[ext_resource type="Texture2D" path="res://addons/godot_scratch_card/examples/assets/card_cover.png" id="3_cover"]
+[ext_resource type="Texture2D" path="res://addons/godot_scratch_card/examples/assets/card_reward.png" id="4_reward"]
+
+[node name="Demo3DScratch" type="Node3D"]
+script = ExtResource("1_demo3d")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0.4, 1.2)
+current = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 0, 3, 3)
+light_energy = 1.2
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+
+[node name="ScratchCard3D" type="Node3D" parent="."]
+script = ExtResource("2_card3d")
+top_texture = ExtResource("3_cover")
+reward_texture = ExtResource("4_reward")
+mesh_size = Vector2(1, 0.6)
+
+[node name="CanvasLayer"type="CanvasLayer"parent="."]
+
+[node name="Panel"type="Panel"parent="CanvasLayer"]
+custom_minimum_size = Vector2(320, 0)
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -340.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = -20.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBoxContainer"type="VBoxContainer"parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="Title"type="Label"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text ="Godot Scratch Card 3D"
+horizontal_alignment = 1
+
+[node name="LabelStatus"type="Label"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+text ="Scratched: 0.0%"
+
+[node name="ProgressBar"type="ProgressBar"parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="HSeparator"type="HSeparator"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxValidSlider"type="VBoxContainer"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LabelValid"type="Label"parent="CanvasLayer/Panel/VBoxContainer/HBoxValidSlider"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text ="Valid Threshold: 25%"
+
+[node name="SliderValid"type="HSlider"parent="CanvasLayer/Panel/VBoxContainer/HBoxValidSlider"]
+layout_mode = 2
+min_value = 5.0
+max_value = 90.0
+value = 25.0
+
+[node name="ChkAutoReveal"type="CheckBox"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text ="Enable Auto-Reveal"
+
+[node name="HBoxSlider"type="VBoxContainer"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LabelThreshold"type="Label"parent="CanvasLayer/Panel/VBoxContainer/HBoxSlider"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text ="Auto-Reveal Threshold: 60%"
+
+[node name="SliderThreshold"type="HSlider"parent="CanvasLayer/Panel/VBoxContainer/HBoxSlider"]
+layout_mode = 2
+min_value = 10.0
+max_value = 95.0
+value = 60.0
+
+[node name="HSeparator2"type="HSeparator"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="BtnReset"type="Button"parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text ="Reset Card"
+
+[node name="BtnReveal"type="Button"parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text ="Reveal All"
+
+[node name="BtnSwitch2D"type="Button"parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text ="Switch to 2D Demo"
+
+[node name="BtnBenchmark"type="Button"parent="CanvasLayer/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text ="Rust vs GDScript Benchmark"
+
+[node name="LogLabel"type="RichTextLabel"parent="CanvasLayer/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+

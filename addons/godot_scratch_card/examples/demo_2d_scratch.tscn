@@ -1,0 +1,200 @@
+[gd_scene format=3 uid="uid://cgufoqp57evwx"]
+
+[ext_resource type="Script" uid="uid://cj2o6ynk12jhl" path="res://addons/godot_scratch_card/examples/demo_2d_scratch.gd" id="1_demo2d"]
+[ext_resource type="Shader" uid="uid://dsvuk428nvia" path="res://addons/godot_scratch_card/shaders/scratch_2d.gdshader" id="2_2tvja"]
+[ext_resource type="Script" uid="uid://elol008hxl7s" path="res://addons/godot_scratch_card/scripts/scratch_card_2d.gd" id="2_card2d"]
+[ext_resource type="Script" uid="uid://siv3160obqin" path="res://addons/godot_scratch_card/resources/scratch_brush.gd" id="4_2tvja"]
+[ext_resource type="Texture2D" uid="uid://bxf3jltnj8bhd" path="res://addons/godot_scratch_card/examples/assets/card_cover.png" id="5_cover"]
+[ext_resource type="Texture2D" uid="uid://dmignpsab7krm" path="res://etoile.png" id="6_4q3sv"]
+[ext_resource type="Texture2D" uid="uid://d26qoqrp2b0bx" path="res://addons/godot_scratch_card/examples/assets/card_reward.png" id="6_reward"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_l8leq"]
+viewport_path = NodePath("MarginContainer/HBoxContainer/CardContainer/ScratchCard2D/ScratchCardBase/MaskSubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vif1k"]
+shader = ExtResource("2_2tvja")
+shader_parameter/mask_texture = SubResource("ViewportTexture_l8leq")
+shader_parameter/reward_texture = ExtResource("6_reward")
+shader_parameter/top_color = Color(0.65, 0.7, 0.78, 1)
+shader_parameter/use_top_texture = true
+shader_parameter/top_texture = ExtResource("5_cover")
+
+[sub_resource type="Resource" id="Resource_w2iep"]
+script = ExtResource("4_2tvja")
+custom_texture = ExtResource("6_4q3sv")
+
+[node name="Demo2DScratch" type="Control" unique_id=689602969]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_demo2d")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1405804766]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.09, 0.11, 0.16, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=819956104]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1593311740]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="CardContainer" type="CenterContainer" parent="MarginContainer/HBoxContainer" unique_id=1647938674]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScratchCard2D" type="Control" parent="MarginContainer/HBoxContainer/CardContainer" unique_id=1946107188]
+material = SubResource("ShaderMaterial_vif1k")
+custom_minimum_size = Vector2(500, 320)
+layout_mode = 2
+script = ExtResource("2_card2d")
+brush = SubResource("Resource_w2iep")
+top_color = Color(0.65, 0.7, 0.78, 1)
+top_texture = ExtResource("5_cover")
+reward_texture = ExtResource("6_reward")
+
+[node name="CardBackground" type="ColorRect" parent="MarginContainer/HBoxContainer/CardContainer/ScratchCard2D" unique_id=7343937]
+show_behind_parent = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.16, 0.22, 0.32, 1)
+
+[node name="RewardLabel" type="Label" parent="MarginContainer/HBoxContainer/CardContainer/ScratchCard2D/CardBackground" unique_id=317258500]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -40.0
+offset_right = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 32
+text = "JACKPOT !
+$500"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel" type="Panel" parent="MarginContainer/HBoxContainer" unique_id=529653254]
+custom_minimum_size = Vector2(380, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Panel" unique_id=1796008426]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 18.0
+offset_top = 18.0
+offset_right = -18.0
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=497947714]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Godot Scratch Card 2D"
+horizontal_alignment = 1
+
+[node name="LabelStatus" type="Label" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=1918294454]
+layout_mode = 2
+text = "Scratched: 0.0%"
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=1603076018]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=1472942314]
+layout_mode = 2
+
+[node name="HBoxValidSlider" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=679416437]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LabelValid" type="Label" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer/HBoxValidSlider" unique_id=193517382]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Valid Threshold: 25%"
+
+[node name="SliderValid" type="HSlider" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer/HBoxValidSlider" unique_id=1111180839]
+layout_mode = 2
+min_value = 5.0
+max_value = 90.0
+value = 25.0
+
+[node name="ChkAutoReveal" type="CheckBox" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=510541500]
+layout_mode = 2
+button_pressed = true
+text = "Enable Auto-Reveal"
+
+[node name="HBoxSlider" type="VBoxContainer" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=993135793]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LabelThreshold" type="Label" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer/HBoxSlider" unique_id=1515286463]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Auto-Reveal Threshold: 60%"
+
+[node name="SliderThreshold" type="HSlider" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer/HBoxSlider" unique_id=1466824016]
+layout_mode = 2
+min_value = 10.0
+max_value = 95.0
+value = 60.0
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=31202458]
+layout_mode = 2
+
+[node name="BtnReset" type="Button" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=1738237684]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Reset Card"
+
+[node name="BtnReveal" type="Button" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=1725388100]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Reveal All"
+
+[node name="BtnSwitch3D" type="Button" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=430763157]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Switch to 3D Demo"
+
+[node name="BtnBenchmark" type="Button" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=138121086]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+text = "Rust vs GDScript Benchmark"
+
+[node name="LogLabel" type="RichTextLabel" parent="MarginContainer/HBoxContainer/Panel/VBoxContainer" unique_id=157680149]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true

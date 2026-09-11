@@ -1,0 +1,10 @@
+[package]
+name = "godot_scratch_card"
+version = "1.0.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+godot = "0.2"
