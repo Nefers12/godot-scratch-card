@@ -15,7 +15,7 @@ signal card_completed()
 
 @export var brush: ScratchBrush = null
 @export var zones: Array[ScratchZone] = []
-@export var viewport_size: Vector2i = Vector2i(512, 512):
+@export var viewport_size: Vector2i = Vector2i(1024, 640):
 	set(val):
 		viewport_size = val.clamp(Vector2i(1, 1), Vector2i(16384, 16384))
 		if sub_viewport != null:
@@ -197,16 +197,12 @@ func _render_mask_strokes(canvas: Node2D) -> void:
 		var from_pos: Vector2 = stroke["from"]
 		var to_pos: Vector2 = stroke["to"]
 		var stroke_radius: float = stroke["radius"]
-		var stroke_color: Color = stroke["color"]
-		var draw_color := stroke_color
-		
-		if brush != null:
-			draw_color.a *= brush.opacity
+		var draw_color := Color(1.0, 1.0, 1.0, brush.opacity if brush != null else 1.0)
 			
 		var active_tex: Texture2D = null
 		if brush != null:
 			if brush.custom_texture != null:
-				active_tex = brush.custom_texture
+				active_tex = ScratchTextureGenerator.create_mask_brush_texture(brush.custom_texture)
 			elif brush.hardness < 0.99:
 				active_tex = ScratchTextureGenerator.create_default_brush_texture(stroke_radius, brush.hardness)
 				
