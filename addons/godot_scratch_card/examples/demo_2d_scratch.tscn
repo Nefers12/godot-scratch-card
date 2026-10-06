@@ -4,12 +4,14 @@
 [ext_resource type="Shader" uid="uid://dsvuk428nvia" path="res://addons/godot_scratch_card/shaders/scratch_2d.gdshader" id="2_2tvja"]
 [ext_resource type="Script" uid="uid://elol008hxl7s" path="res://addons/godot_scratch_card/scripts/scratch_card_2d.gd" id="2_card2d"]
 [ext_resource type="Script" uid="uid://siv3160obqin" path="res://addons/godot_scratch_card/resources/scratch_brush.gd" id="4_2tvja"]
-[ext_resource type="Texture2D" uid="uid://bxf3jltnj8bhd" path="res://addons/godot_scratch_card/examples/assets/card_cover.png" id="5_cover"]
-[ext_resource type="Texture2D" uid="uid://dmignpsab7krm" path="res://etoile.png" id="6_4q3sv"]
+[ext_resource type="Texture2D" uid="uid://ba1ci6xf48g1i" path="res://addons/godot_scratch_card/examples/assets/star.png" id="5_0aqi8"]
 [ext_resource type="Texture2D" uid="uid://d26qoqrp2b0bx" path="res://addons/godot_scratch_card/examples/assets/card_reward.png" id="6_reward"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_l8leq"]
 viewport_path = NodePath("MarginContainer/HBoxContainer/CardContainer/ScratchCard2D/ScratchCardBase/MaskSubViewport")
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0aqi8"]
+load_path = "res://.godot/imported/card_cover.png-e2d76a19dda1127a00b97fd55b06db73.s3tc.ctex"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vif1k"]
 shader = ExtResource("2_2tvja")
@@ -17,11 +19,12 @@ shader_parameter/mask_texture = SubResource("ViewportTexture_l8leq")
 shader_parameter/reward_texture = ExtResource("6_reward")
 shader_parameter/top_color = Color(0.65, 0.7, 0.78, 1)
 shader_parameter/use_top_texture = true
-shader_parameter/top_texture = ExtResource("5_cover")
+shader_parameter/top_texture = SubResource("CompressedTexture2D_0aqi8")
 
-[sub_resource type="Resource" id="Resource_w2iep"]
+[sub_resource type="Resource" id="Resource_srhx2"]
 script = ExtResource("4_2tvja")
-custom_texture = ExtResource("6_4q3sv")
+custom_texture = ExtResource("5_0aqi8")
+metadata/_custom_type_script = "uid://siv3160obqin"
 
 [node name="Demo2DScratch" type="Control" unique_id=689602969]
 layout_mode = 3
@@ -66,9 +69,9 @@ material = SubResource("ShaderMaterial_vif1k")
 custom_minimum_size = Vector2(500, 320)
 layout_mode = 2
 script = ExtResource("2_card2d")
-brush = SubResource("Resource_w2iep")
+brush = SubResource("Resource_srhx2")
 top_color = Color(0.65, 0.7, 0.78, 1)
-top_texture = ExtResource("5_cover")
+top_texture = SubResource("CompressedTexture2D_0aqi8")
 reward_texture = ExtResource("6_reward")
 
 [node name="CardBackground" type="ColorRect" parent="MarginContainer/HBoxContainer/CardContainer/ScratchCard2D" unique_id=7343937]
